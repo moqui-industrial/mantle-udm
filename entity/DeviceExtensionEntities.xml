@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This software is in the public domain under CC0 1.0 Universal plus a
+Grant of Patent License.
+
+To the extent possible under law, the author(s) have dedicated all
+copyright and related and neighboring rights to this software to the
+public domain worldwide. This software is distributed without any
+warranty.
+
+You should have received a copy of the CC0 Public Domain Dedication
+along with this software (see the LICENSE.md file). If not, see
+<http://creativecommons.org/publicdomain/zero/1.0/>.
+-->
+<entities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/entity-definition-3.xsd">
+
+    <!-- Links between the Mantle product, asset and requirement model and the moqui-device runtime model.
+         A Device is the runtime node (status, parameters, rules, events) of an Asset, the physical instance of a
+         Product. The extension of moqui.device.Device is merged only when moqui-device is installed; without it
+         the Device entity is never loaded and this block is not used, so mantle-udm does not depend on it. -->
+
+    <extend-entity entity-name="Device" package="moqui.device">
+        <field name="assetId" type="id"><description>The Asset this Device is the runtime node of; the Asset
+            carries the productId. Empty for a group node that is not an asset of its own (a subsystem, a zone,
+            a safety function).</description></field>
+        <relationship type="one-nofk" related="mantle.product.asset.Asset" short-alias="asset"/>
+    </extend-entity>
+
+    <extend-entity entity-name="Requirement" package="mantle.request.requirement">
+        <field name="deviceId" type="id"><description>The Device the requirement applies to, when it is neither
+            a Product nor an Asset: for example a DeviceGroup that realizes a safety function or a security zone,
+            which usually has no Asset of its own.</description></field>
+        <relationship type="one-nofk" related="moqui.device.Device" short-alias="device"/>
+    </extend-entity>
+
+</entities>
